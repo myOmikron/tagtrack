@@ -37,20 +37,23 @@ type Order struct {
 
 type ProcessingStep struct {
 	utilitymodels.CommonID
-	Description      string    `json:"description"`
+	Description      string `json:"description"`
+	OrderID          uint
 	RequiredMachines []Machine `json:"requiredMachines"`
 }
 
 type Machine struct {
 	utilitymodels.CommonID
-	Name          string `json:"name"`
-	CurrentlyUsed bool   `json:"currentlyUsed"`
-	TagID         uint   `json:"tagID"`
-	Tag           Tag
+	Name             string `json:"name"`
+	CurrentlyUsed    bool   `json:"currentlyUsed"`
+	ProcessingStepID uint
+	TagID            uint `json:"tagID"`
+	Tag              Tag
 }
 
 type Tag struct {
 	utilitymodels.Common
+	OrderID uint
 }
 
 type Device struct {
