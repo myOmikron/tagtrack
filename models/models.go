@@ -28,8 +28,6 @@ type Order struct {
 	Customer        utilitymodels.LocalUser `json:"customer"`
 	Description     string                  `json:"description"`
 	ProcessingSteps []ProcessingStep        `json:"steps"`
-	Steps           uint
-	StepMax         uint
 	OrderStateID    uint
 	OrderState      OrderState
 	Tags            []Tag
@@ -39,6 +37,7 @@ type ProcessingStep struct {
 	utilitymodels.CommonID
 	Description      string `json:"description"`
 	OrderID          uint
+	Finished         bool      `json:"finished"`
 	RequiredMachines []Machine `json:"requiredMachines"`
 }
 
