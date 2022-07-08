@@ -1,7 +1,10 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/hellflame/argparse"
@@ -11,6 +14,29 @@ import (
 	"github.com/myOmikron/tagtrack/server"
 )
 
+func assertAvailablePRNG() {
+	buf := make([]byte, 1)
+	_, err := io.ReadFull(rand.Reader, buf)
+	if err != nil {
+		panic(fmt.Sprintf("crypto/rand is unavailable: Read() error %#v", err))
+	}
+}
+
+func generateRandomBytes(n int) ([]byte, error) {
+	assertAvailablePRNG()
+	b := make([]byte, n)
+	_, err := rand.Read(b)
+	if err != nil {
+		return nil, err
+	}
+	return b, nil
+}
+
+func generateRandomBase64String(n int) (string, error) {
+	b, err := generateRandomBytes(n)
+	return base64.URLEncoding.EncodeToString(b), err
+}
+
 func main() {
 	parser := argparse.NewParser("tagtrack", "TagTrack server", nil)
 
@@ -18,6 +44,9 @@ func main() {
 		DisableDefaultShowHelp: true,
 	})
 	port := parserRun.Int("p", "port", &argparse.Option{Default: "8080"})
+
+	parserDevice := parser.AddCommand("device", "Create a new device for deployment", nil)
+	deviceDescription := parserDevice.String("d", "description", nil)
 
 	parserAddUser := parser.AddCommand("add", "Create a new local user", nil)
 	userUsername := parserAddUser.String("u", "username", &argparse.Option{Required: true})
@@ -35,6 +64,23 @@ func main() {
 	switch {
 	case parserRun.Invoked:
 		server.Start(*port)
+
+	case parserDevice.Invoked:
+		db := server.InitDB()
+		sharedSecret, err := generateRandomBase64String(24)
+		if err != nil {
+			fmt.Printf("Error: %v\n", err)
+			os.Exit(1)
+		}
+		device := models.Device{
+			Description:     deviceDescription,
+			PreSharedSecret: sharedSecret,
+		}
+		db.Create(&device)
+		fmt.Printf(
+			"Successfully added a new device with ID %d.\nDescription:\t%s\nShared secret:\t%s\nMAKE SURE TO COPY & SAFE THIS SHARED SECRET!",
+			device.ID, *device.Description, device.PreSharedSecret)
+
 	case parserAddCustomer.Invoked:
 		db := server.InitDB()
 		if customerUsername == nil || customerPassword == nil {

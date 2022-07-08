@@ -56,8 +56,9 @@ type Tag struct {
 }
 
 type Device struct {
-	utilitymodels.CommonID
-	Description *string
+	utilitymodels.Common
+	Description     *string
+	PreSharedSecret string
 }
 
 type LocationPing struct {
