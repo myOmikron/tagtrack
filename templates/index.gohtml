@@ -8,7 +8,33 @@
     <title>Title</title>
 </head>
 <body>
+<div class="top-bar">
+    <div class="top-bar-item" id="company-name">Schreinerei Meister</div>
 
+    <a class="logout" href="/logout">
+        <img src="/static/img/logout.svg" alt="Logout button">
+    </a>
+</div>
+
+<div class="content">
+    <h3 class="section-heading">Bestellungen</h3>
+    <div class="order-list">
+        {{range .Orders}}
+            <div class="order">
+                <h4 class="order-heading">{{.Description}}</h4>
+                <div class="icon-list">
+                {{ $length := len .ProcessingSteps }}
+                    <img class="order-state-icon {{if ne .OrderState.Step 1 }}inactive{{end}}" src="/static/img/mailbox.svg" alt="">
+                    <img class="order-state-next" src="/static/img/next.svg" alt="">
+                    <img class="order-state-icon {{if or (eq .OrderState.Step 1) (eq .OrderState.Step $length) }}inactive{{else}}loading{{end}}" src="/static/img/loading.svg" alt="">
+                    <img class="order-state-next" src="/static/img/next.svg" alt="">
+                    <img class="order-state-icon {{if ne .OrderState.Step $length }}inactive{{end}}" src="/static/img/finished.svg" alt="">
+                </div>
+                <p>Ihr Produkt befindet sich derzeitig im Schritt: <span class="bold">{{.OrderState.Description}}</span></p>
+            </div>
+        {{end}}
+    </div>
+</div>
 </body>
 </html>
 {{end}}

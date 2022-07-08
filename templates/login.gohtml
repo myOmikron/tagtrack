@@ -8,11 +8,17 @@
     <title>Login</title>
 </head>
 <body>
-    <form class="loginBox" method="POST" action="/login">
-        <input name="username" placeholder="Username" required>
-        <input name="password" type="password" placeholder="Password" required>
-        <button>Login</button>
+<div class="top-bar">
+    <div id="company-name" class="top-bar-item">Schreinerei Meister</div>
+</div>
+<div class="content-box">
+    <form class="login-box" method="POST" action="/login">
+        <h2>Login</h2>
+        <input class="input" name="username" placeholder="Username" required>
+        <input class="input" name="password" type="password" placeholder="Password" required>
+        <button class="button">Login</button>
     </form>
+</div>
 </body>
 </html>
 {{end}}

@@ -24,7 +24,7 @@ func (wrapper *Wrapper) Index(c echo.Context) error {
 		panic(42)
 	}
 
-	wrapper.Database.Find(&orders, "customer_id = ? ORDER BY created_at", id).Joins("LEFT JOIN processing_steps AS p ON p.order_id = orders.id")
+	wrapper.Database.Preload("OrderState").Preload("ProcessingSteps").Find(&orders, "customer_id = ? ORDER BY created_at", id)
 	return c.Render(http.StatusOK, "index", struct {
 		Orders []models.Order
 	}{Orders: orders})
