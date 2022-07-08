@@ -11,6 +11,7 @@ import (
 type newLocationEntry struct {
 	DeviceID uint `json:"deviceID"`
 	TagID    uint `json:"tagID"`
+	Power    int  `json:"power"` // closer to zero means stronger (always negative)
 }
 
 func (wrapper *Wrapper) LocationGet(c echo.Context) error {
@@ -30,8 +31,8 @@ func (wrapper *Wrapper) LocationPost(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &entry); err != nil {
 		return c.String(http.StatusBadRequest, "Invalid request body")
 	}
-	if entry.TagID == 0 || entry.DeviceID == 0 {
-		return c.String(http.StatusBadRequest, "Invalid or empty IDs")
+	if entry.TagID == 0 || entry.DeviceID == 0 || entry.Power == 0 {
+		return c.String(http.StatusBadRequest, "Invalid or empty IDs or power values")
 	}
 	account := models.LocationPing{TagID: entry.TagID, DeviceID: entry.DeviceID}
 	wrapper.Database.Create(&account)
