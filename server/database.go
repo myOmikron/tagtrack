@@ -20,5 +20,6 @@ func InitDB() *gorm.DB {
 		models.Device{},
 		models.LocationPing{},
 		models.MachineLog{},
+		models.MachineHistory{},
 	)
 }

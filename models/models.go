@@ -76,3 +76,10 @@ type MachineLog struct {
 	HasStarted bool      `json:"hasStarted"`
 	CreatedAt  time.Time `json:"created"`
 }
+
+type MachineHistory struct {
+	utilitymodels.CommonID
+	MachineID uint
+	Machine   Machine
+	Usage     float64
+}
