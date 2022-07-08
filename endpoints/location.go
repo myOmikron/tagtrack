@@ -13,6 +13,15 @@ type newLocationEntry struct {
 	TagID    uint `json:"tagID"`
 }
 
+func (wrapper *Wrapper) LocationGet(c echo.Context) error {
+	if err := wrapper.requireManagement(c); err != nil {
+		return err
+	}
+	var locationPings []models.LocationPing
+	wrapper.Database.Find(&locationPings)
+	return c.JSONPretty(http.StatusOK, locationPings, "  ")
+}
+
 func (wrapper *Wrapper) LocationPost(c echo.Context) error {
 	if err := wrapper.requireDeviceHeader(c); err != nil {
 		return err

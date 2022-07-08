@@ -24,8 +24,17 @@ func (wrapper *Wrapper) Index(c echo.Context) error {
 		panic(42)
 	}
 
-	wrapper.Database.Preload("OrderState").Preload("ProcessingSteps").Find(&orders, "customer_id = ? ORDER BY created_at", id)
-	return c.Render(http.StatusOK, "index", struct {
-		Orders []models.Order
-	}{Orders: orders})
+	var accounts []models.AccountInfo
+	wrapper.Database.Find(&accounts, "local_user_id = ?", id)
+	if len(accounts) != 1 {
+		return c.String(http.StatusBadRequest, "Invalid account information")
+	}
+	if accounts[0].IsCustomer {
+		wrapper.Database.Preload("OrderState").Preload("ProcessingSteps").Find(&orders, "customer_id = ? ORDER BY created_at", id)
+		return c.Render(http.StatusOK, "index", struct {
+			Orders []models.Order
+		}{Orders: orders})
+	} else {
+		return c.Redirect(http.StatusFound, "/management")
+	}
 }

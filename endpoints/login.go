@@ -1,7 +1,6 @@
 package endpoints
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -19,7 +18,6 @@ func (wrapper *Wrapper) LoginGet(c echo.Context) error {
 }
 
 func (wrapper *Wrapper) LoginPost(c echo.Context) error {
-	log.Println("Test")
 	var req LoginRequest
 	if err := c.Bind(&req); err != nil {
 		return c.String(http.StatusBadRequest, "Not enough arguments")
