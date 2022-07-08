@@ -196,16 +196,18 @@
 		var days = Math.floor(h / 24);
 		h %= 24;
 
+		graphHover.textContent = "Maschinenauslastung ";
 		if (days > 0) {
-			graphHover.textContent = "vor " + (days > 1 ? days + " Tagen" : "einem Tag");
+			graphHover.textContent += "vor " + (days > 1 ? days + " Tagen" : "einem Tag");
 			if (h > 0) {
 				graphHover.textContent += " und " + (h > 1 ? h + " Stunden" : "einer Stunde");
 			}
 		} else if (h > 0) {
-			graphHover.textContent = "vor " + (h > 1 ? h + " Stunden" : "einer Stunde");
+			graphHover.textContent += "vor " + (h > 1 ? h + " Stunden" : "einer Stunde");
 		} else {
-			graphHover.textContent = "jetzt";
+			graphHover.textContent += "jetzt";
 		}
+		graphHover.textContent += ": " + Math.round(target[i]) + "%";
 
 		var size = graphHover.getBoundingClientRect();
 
