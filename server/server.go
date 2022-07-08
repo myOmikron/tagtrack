@@ -13,10 +13,10 @@ import (
 	"github.com/myOmikron/echotools/utilitymodels"
 )
 
-func Start() {
+func Start(port int) {
 	fmt.Printf("Do!!\n")
 
-	db := initDB()
+	db := InitDB()
 
 	e := echo.New()
 	renderer := &TemplateRenderer{
@@ -37,7 +37,7 @@ func Start() {
 
 	setupEndpoints(e, db)
 
-	execution.SignalStart(e, ":8080", &execution.Config{
+	execution.SignalStart(e, fmt.Sprintf(":%d", port), &execution.Config{
 		ReloadFunc:    func() {},
 		StopFunc:      func() {},
 		TerminateFunc: func() {},

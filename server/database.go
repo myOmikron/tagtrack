@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func initDB() *gorm.DB {
+func InitDB() *gorm.DB {
 	driver := sqlite.Open("sqlite.db")
 	return database.Initialize(driver)
 }

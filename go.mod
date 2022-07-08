@@ -3,6 +3,7 @@ module github.com/myOmikron/tagtrack
 go 1.18
 
 require (
+	github.com/hellflame/argparse v1.8.0
 	github.com/labstack/echo/v4 v4.7.2
 	github.com/myOmikron/echotools v0.7.0
 	gorm.io/driver/sqlite v1.3.6
