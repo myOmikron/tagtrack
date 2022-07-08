@@ -1,4 +1,4 @@
-package customer
+package server
 
 import (
 	"html/template"
