@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"server"
+	"github.com/myOmikron/tagtrack/server"
 )
 
 func main() {

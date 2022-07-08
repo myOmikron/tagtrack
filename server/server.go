@@ -20,7 +20,7 @@ func Start() {
 
 	e := echo.New()
 	renderer := &TemplateRenderer{
-		templates: template.Must(template.ParseFS(os.DirFS("../templates/"), "*.gohtml")),
+		templates: template.Must(template.ParseFS(os.DirFS("templates/"), "*.gohtml")),
 	}
 	e.Renderer = renderer
 	e.Use(mw.LoggerWithConfig(mw.LoggerConfig{
