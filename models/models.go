@@ -67,3 +67,11 @@ type LocationPing struct {
 	DeviceID  uint      `json:"deviceID"`
 	CreatedAt time.Time `json:"created"`
 }
+
+type MachineLog struct {
+	utilitymodels.CommonID
+	MachineID  uint      `json:"machineID"`
+	Machine    Machine   `json:"-"`
+	HasStarted bool      `json:"hasStarted"`
+	CreatedAt  time.Time `json:"created"`
+}
