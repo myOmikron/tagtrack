@@ -14,8 +14,6 @@ import (
 )
 
 func Start(port int) {
-	fmt.Printf("Do!!\n")
-
 	db := InitDB()
 
 	e := echo.New()
