@@ -25,15 +25,13 @@ func (wrapper *Wrapper) LoginPost(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "Not enough arguments")
 	}
 
-	// TODO: Do login
-
 	user, err := auth.AuthenticateLocalUser(wrapper.Database, req.Username, req.Password)
 	if err != nil {
 		return c.String(http.StatusUnauthorized, "Invalid credentials")
 	}
 
 	if err := middleware.Login(wrapper.Database, user, c, true); err != nil {
-		return c.String(http.StatusInternalServerError, "put put :(")
+		return c.String(http.StatusInternalServerError, "Login")
 	}
 
 	return c.Redirect(http.StatusFound, "/")

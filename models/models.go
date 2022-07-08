@@ -15,8 +15,8 @@ type AccountInfo struct {
 
 type OrderState struct {
 	utilitymodels.CommonID
-	Step        uint
-	Description *string
+	Step        uint    `json:"step"`
+	Description *string `json:"description"`
 }
 
 type Order struct {
@@ -25,18 +25,18 @@ type Order struct {
 	UpdatedAt       time.Time               `json:"updated"`
 	OrderID         string                  `json:"orderID"` // Invoice Number
 	CustomerID      uint                    `json:"customerID"`
-	Customer        utilitymodels.LocalUser `json:"customer"`
+	Customer        utilitymodels.LocalUser `json:"-"`
 	Description     string                  `json:"description"`
 	ProcessingSteps []ProcessingStep        `json:"steps"`
-	OrderStateID    uint
-	OrderState      OrderState
-	Tags            []Tag
+	OrderStateID    uint                    `json:"-"`
+	OrderState      OrderState              `json:"orderState"`
+	Tags            []Tag                   `json:"tags"`
 }
 
 type ProcessingStep struct {
 	utilitymodels.CommonID
-	Description      string `json:"description"`
-	OrderID          uint
+	Description      string    `json:"description"`
+	OrderID          uint      `json:"-"`
 	Finished         bool      `json:"finished"`
 	RequiredMachines []Machine `json:"requiredMachines"`
 }
@@ -45,14 +45,14 @@ type Machine struct {
 	utilitymodels.CommonID
 	Name             string `json:"name"`
 	CurrentlyUsed    bool   `json:"currentlyUsed"`
-	ProcessingStepID uint
-	TagID            uint `json:"tagID"`
-	Tag              Tag
+	ProcessingStepID uint   `json:"-"`
+	TagID            uint   `json:"tagID"`
+	Tag              Tag    `json:"-"`
 }
 
 type Tag struct {
 	utilitymodels.Common
-	OrderID uint
+	OrderID *uint `gorm:"null" json:"-"`
 }
 
 type Device struct {
