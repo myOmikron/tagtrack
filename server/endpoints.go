@@ -17,5 +17,6 @@ func setupEndpoints(e *echo.Echo, db *gorm.DB) {
 	e.POST("/logout", wrapper.Logout)
 	e.GET("/api/orders", loginRequired(wrapper.OrdersGet))
 	e.POST("/api/locations", wrapper.LocationPost)
+	e.Static("/management", "management")
 	e.Static("/static", "static")
 }

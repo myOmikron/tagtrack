@@ -21,6 +21,9 @@ func (wrapper *Wrapper) LocationPost(c echo.Context) error {
 	if err := utility.ValidateJsonForm(c, &entry); err != nil {
 		return c.String(http.StatusBadRequest, "Invalid request body")
 	}
+	if entry.TagID == 0 || entry.DeviceID == 0 {
+		return c.String(http.StatusBadRequest, "Invalid or empty IDs")
+	}
 	account := models.LocationPing{TagID: entry.TagID, DeviceID: entry.DeviceID}
 	wrapper.Database.Create(&account)
 	return c.String(http.StatusOK, "Added new location post successfully")
