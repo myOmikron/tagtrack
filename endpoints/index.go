@@ -35,6 +35,6 @@ func (wrapper *Wrapper) Index(c echo.Context) error {
 			Orders []models.Order
 		}{Orders: orders})
 	} else {
-		return c.Redirect(http.StatusFound, "/management")
+		return c.Redirect(http.StatusFound, "/management/")
 	}
 }
