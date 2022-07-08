@@ -14,6 +14,9 @@ type newLocationEntry struct {
 }
 
 func (wrapper *Wrapper) LocationPost(c echo.Context) error {
+	if err := wrapper.requireDeviceHeader(c); err != nil {
+		return err
+	}
 	var entry newLocationEntry
 	if err := utility.ValidateJsonForm(c, &entry); err != nil {
 		return c.String(http.StatusBadRequest, "Invalid request body")
