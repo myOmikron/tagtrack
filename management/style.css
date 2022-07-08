@@ -152,6 +152,25 @@ body {
 	height: 100%;
 }
 
+table tr {
+	cursor: default;
+}
+
 table tr:hover {
 	background-color: rgba(0,0,0,0.05);
+}
+
+.logout {
+	position: absolute;
+	top: 0;
+	right: 0;
+	background-color: #6002EE;
+	padding: 8px 16px;
+	padding-left: 24px;
+	border-bottom-left-radius: 8px;
+}
+
+.logout img {
+	height: 44px;
+	filter: invert(100%);
 }

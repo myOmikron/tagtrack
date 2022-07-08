@@ -71,17 +71,17 @@
 			<table>
 				<tbody>
 					<tr>
-						<td><input type="checkbox" checked></td>
+						<td><input type="checkbox" checked data-id="0"></td>
 						<td>Formatkreissäge</td>
 						<td class="busy">2 Aufträge</td>
 					</tr>
 					<tr>
-						<td><input type="checkbox" checked></td>
+						<td><input type="checkbox" checked data-id="1"></td>
 						<td>Abrichthobel</td>
 						<td class="free">Frei</td>
 					</tr>
 					<tr>
-						<td><input type="checkbox" checked></td>
+						<td><input type="checkbox" checked data-id="2"></td>
 						<td>Dickenhobel</td>
 						<td class="free">Frei</td>
 					</tr>
@@ -91,6 +91,11 @@
 	</div>
 	<div id="map">
 		<canvas></canvas>
+	</div>
+	<div class="logout">
+		<a href="/logout">
+			<img src="../static/img/logout.svg" alt="Logout">
+		</a>
 	</div>
 
 	<script src="state.js"></script>

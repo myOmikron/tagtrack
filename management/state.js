@@ -67,7 +67,15 @@ const orders = [
 
 let machineStates = [];
 for (let i = 0; i < machines.length; i++) {
-	machineStates.push({ id: i, active: [], queue: [] });
+	machineStates.push({ id: i, active: [], queue: [], uptimes: generateUptimes() });
+}
+
+function generateUptimes() {
+	var ret = [];
+	for (let i = 0; i < 7 * 24; i++) {
+		ret.push(Math.random());
+	}
+	return ret;
 }
 
 function updateState() {
@@ -103,8 +111,12 @@ machineRows.forEach(row => {
 	row.addEventListener("click", function(e) {
 		if (e.target.tagName == "INPUT") return;
 
+		/**
+		 * @type {HTMLInputElement}
+		 */
 		let input = this.querySelector("input");
 		input.checked = !input.checked;
+		input.dispatchEvent(new Event("change"));
 
 		e.preventDefault();
 	});
