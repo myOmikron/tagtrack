@@ -22,7 +22,7 @@ func (wrapper *Wrapper) LoginPost(c echo.Context) error {
 	log.Println("Test")
 	var req LoginRequest
 	if err := c.Bind(&req); err != nil {
-		return c.String(http.StatusBadRequest, "not enough arguments")
+		return c.String(http.StatusBadRequest, "Not enough arguments")
 	}
 
 	// TODO: Do login
@@ -33,8 +33,15 @@ func (wrapper *Wrapper) LoginPost(c echo.Context) error {
 	}
 
 	if err := middleware.Login(wrapper.Database, user, c, true); err != nil {
-		return c.String(http.StatusInternalServerError, "put put :(") // TODO: database put put ?
+		return c.String(http.StatusInternalServerError, "put put :(")
 	}
 
+	return c.Redirect(http.StatusFound, "/")
+}
+
+func (wrapper *Wrapper) Logout(c echo.Context) error {
+	if err := middleware.Logout(wrapper.Database, c); err != nil {
+		return c.String(http.StatusBadRequest, "Failed to logout")
+	}
 	return c.Redirect(http.StatusFound, "/")
 }
