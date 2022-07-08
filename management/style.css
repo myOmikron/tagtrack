@@ -174,3 +174,15 @@ table tr:hover {
 	height: 44px;
 	filter: invert(100%);
 }
+
+.graph-hover {
+	position: absolute;
+	display: block;
+	left: 0;
+	top: 0;
+	z-index: 100;
+	background-color: white;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+	transition: 200ms ease-out opacity;
+	padding: 1em;
+}

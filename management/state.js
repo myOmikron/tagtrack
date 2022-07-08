@@ -72,7 +72,7 @@ for (let i = 0; i < machines.length; i++) {
 
 function generateUptimes() {
 	var ret = [];
-	for (let i = 0; i < 7 * 24; i++) {
+	for (let i = 0; i < 7 * 24 + 1; i++) {
 		ret.push(Math.random());
 	}
 	return ret;
