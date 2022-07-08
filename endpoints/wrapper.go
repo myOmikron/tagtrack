@@ -36,7 +36,7 @@ func (wrapper *Wrapper) requireDeviceHeader(c echo.Context) error {
 	return nil
 }
 
-func (wrapper *Wrapper) requireManagement(c echo.Context) error {
+func (wrapper *Wrapper) RequireManagement(c echo.Context) error {
 	context, err := middleware.GetSessionContext(c)
 	if err != nil {
 		panic(42)
@@ -54,6 +54,9 @@ func (wrapper *Wrapper) requireManagement(c echo.Context) error {
 			_ = c.String(http.StatusForbidden, "You are not permitted")
 			return errors.New("fail")
 		}
+	case nil:
+		_ = c.Redirect(http.StatusFound, "/login")
+		return errors.New("fail")
 	default:
 		panic(42)
 	}

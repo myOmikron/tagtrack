@@ -65,7 +65,8 @@ type LocationPing struct {
 	utilitymodels.CommonID
 	TagID     uint      `json:"tagID"`
 	DeviceID  uint      `json:"deviceID"`
-	CreatedAt time.Time `json:"created"`
+	Power     int       `json:"power"`
+	CreatedAt time.Time `json:"created"` // closer to zero means stronger (always negative)
 }
 
 type MachineLog struct {

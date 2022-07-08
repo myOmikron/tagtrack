@@ -8,7 +8,7 @@ import (
 )
 
 func (wrapper *Wrapper) OrdersGet(c echo.Context) error {
-	if err := wrapper.requireManagement(c); err != nil {
+	if err := wrapper.RequireManagement(c); err != nil {
 		return err
 	}
 	var orders []models.Order

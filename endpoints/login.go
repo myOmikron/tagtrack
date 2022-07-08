@@ -29,7 +29,7 @@ func (wrapper *Wrapper) LoginPost(c echo.Context) error {
 	}
 
 	if err := middleware.Login(wrapper.Database, user, c, true); err != nil {
-		return c.String(http.StatusInternalServerError, "Login")
+		return c.Redirect(http.StatusFound, "Login")
 	}
 
 	return c.Redirect(http.StatusFound, "/")
@@ -37,7 +37,8 @@ func (wrapper *Wrapper) LoginPost(c echo.Context) error {
 
 func (wrapper *Wrapper) Logout(c echo.Context) error {
 	if err := middleware.Logout(wrapper.Database, c); err != nil {
-		return c.String(http.StatusBadRequest, "Failed to logout")
+		c.Logger().Error("Failed to logout a user")
+		return c.Redirect(http.StatusFound, "/login")
 	}
 	return c.Redirect(http.StatusFound, "/")
 }

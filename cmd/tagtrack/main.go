@@ -16,7 +16,10 @@ import (
 
 func generateRandomBase64String(n int) string {
 	b := make([]byte, n)
-	io.ReadFull(rand.Reader, b)
+	_, err := io.ReadFull(rand.Reader, b)
+	if err != nil {
+		panic("Do we have a random source?")
+	}
 	return base64.URLEncoding.EncodeToString(b)
 }
 
