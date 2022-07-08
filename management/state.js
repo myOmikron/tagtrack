@@ -151,11 +151,31 @@ const orders = [
 		]
 	}
 ];
+/**
+ * @type {Function[]}
+ */
+let orderObservers = [];
 
 let machineStates = [];
+let selectedMachines = [];
 for (let i = 0; i < machines.length; i++) {
 	machineStates.push({ id: i, active: [], queue: [], uptimes: generateUptimes() });
+	selectedMachines.push(true);
 }
+
+function generateSelectedMachines() {
+	let checkboxes = document.querySelectorAll(".machines input[type=\"checkbox\"]");
+	let indices = [];
+	checkboxes.forEach(cb => {
+		indices[parseInt(cb.getAttribute("data-id"))] = cb.checked;
+	});
+	return selectedMachines = indices;
+}
+
+/**
+ * @type {Function[]}
+ */
+let machineStateObservers = [];
 
 function generateUptimes() {
 	var ret = [];
@@ -179,7 +199,11 @@ function updateState() {
 			machineStates[id].queue.push(order);
 		});
 	});
+
+	emit(machineStateObservers);
 }
+
+const emit = (e) => e.forEach(f => f());
 
 var tableHeaders = document.querySelectorAll("thead > tr");
 tableHeaders.forEach(header => {
@@ -190,21 +214,5 @@ tableHeaders.forEach(header => {
 
 		if (table)
 			table.classList.toggle("collapsed");
-	});
-});
-
-var machineRows = document.querySelectorAll(".machines tr");
-machineRows.forEach(row => {
-	row.addEventListener("click", function(e) {
-		if (e.target.tagName == "INPUT") return;
-
-		/**
-		 * @type {HTMLInputElement}
-		 */
-		let input = this.querySelector("input");
-		input.checked = !input.checked;
-		input.dispatchEvent(new Event("change"));
-
-		e.preventDefault();
 	});
 });

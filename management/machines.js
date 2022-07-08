@@ -5,16 +5,6 @@
 	const canvas = document.getElementById("auslastung");
 	const context = canvas.getContext("2d");
 
-	let checkboxes = document.querySelectorAll(".machines input[type=\"checkbox\"]");
-	function generateSelectedIndices() {
-		let indices = [];
-		checkboxes.forEach(cb => {
-			indices[parseInt(cb.getAttribute("data-id"))] = cb.checked;
-		});
-		return indices;
-	}
-	let selectedIndices = generateSelectedIndices();
-
 	var current = new Array(7 * 24 + 1);
 	var target = new Array(7 * 24 + 1);
 	for (let i = 0; i < target.length; i++) {
@@ -86,7 +76,7 @@
 		let totalCount = 0;
 		for (let i = 0; i < machineStates.length; i++) {
 			const s = machineStates[i];
-			if (selectedIndices[i]) {
+			if (selectedMachines[i]) {
 				totalCount++;
 				for (let i = 0; i < target.length; i++) {
 					target[i] += s.uptimes[i];
@@ -150,13 +140,9 @@
 	}
 	redraw();
 
-	checkboxes.forEach(cb => {
-		cb.addEventListener("change", function () {
-			selectedIndices = generateSelectedIndices();
-			console.log(selectedIndices);
-			if (!isRedrawing)
-				redraw();
-		});
+	machineStateObservers.push(function() {
+		if (!isRedrawing)
+			redraw();
 	});
 
 	var graphHover = document.createElement("div");
@@ -243,3 +229,174 @@ function getPosition(el) {
 		y: yPos
 	};
 }
+
+(function() {
+	const statesEnum = [
+		"Unbekannt",
+		"in Bearbeitung",
+		"in Warteschlange",
+		"Ausstehend",
+		"Versandfertig"
+	]
+
+	let updating = false;
+	function refreshOrders(orders) {
+		if (updating) return;
+		updating = true;
+		console.log("refreshing orders");
+
+		var groupings = [];
+
+		orders.forEach(order => {
+			let state = 0; // Unbekannt
+			if (order.processingMachines.length)
+				state = 1; // in Bearbeitung
+			else if (order.waitingForMachines.length)
+				state = 2; // in Warteschleife
+			else if (order.steps.every(s => s.done == false))
+				state = 3; // Ausstehend
+			else if (order.steps.every(s => s.done == true))
+				state = 4; // Versandfertig
+
+			if (!groupings[state])
+				groupings[state] = [];
+
+			groupings[state].push(order);
+		});
+
+		console.log(groupings);
+
+		var html = document.querySelector(".orders");
+		let htmlIndex = 0;
+		for (let i = 0; i < groupings.length; i++) {
+			const grouping = groupings[i];
+			while (htmlIndex < html.children.length
+				&& parseInt(html.children[htmlIndex].getAttribute("data-group")) < i)
+				html.removeChild(html.children[htmlIndex]);
+
+			if (!grouping)
+				continue;
+
+			let target = html.children[htmlIndex];
+			if (htmlIndex >= html.children.length
+				|| parseInt(html.children[htmlIndex].getAttribute("data-group")) != i) {
+				target = document.createElement("section");
+				target.setAttribute("data-group", i.toString());
+				html.insertBefore(target, html.children[htmlIndex]);
+				htmlIndex++;
+
+				var table = document.createElement("table");
+				var thead = document.createElement("thead");
+				var tr = document.createElement("tr");
+				var th = document.createElement("th");
+				th.className = "label";
+				th.setAttribute("colspan", "3");
+				th.textContent = statesEnum[i];
+
+				tr.appendChild(th);
+				thead.appendChild(tr);
+				table.appendChild(thead);
+				table.appendChild(document.createElement("tbody"));
+				target.appendChild(table);
+			}
+
+			target = target.querySelector("tbody");
+			for (let j = 0; j < grouping.length; j++) {
+				const order = grouping[j];
+				let row = target.children[j];
+				if (!row) {
+					row = document.createElement("tr");
+					row.appendChild(document.createElement("td"));
+					row.appendChild(document.createElement("td"));
+					row.appendChild(document.createElement("td"));
+					target.appendChild(row);
+				}
+
+				if (row.children[0].textContent != order.id)
+					row.children[0].textContent = order.id;
+				if (row.children[1].textContent != order.label)
+					row.children[1].textContent = order.label;
+
+				let steps = [0, 0];
+				order.steps.forEach(step => {
+					if (step.done) steps[0]++;
+					steps[1]++;
+				});
+				steps = steps[0] + " / " + steps[1];
+				if (row.children[2].textContent != steps)
+					row.children[2].textContent = steps;
+			}
+
+			while (target.children[grouping.length])
+				target.removeChild(target.children[grouping.length]);
+		}
+
+		updating = false;
+	}
+
+	orderObservers.push(function() {
+		refreshOrders(orders);
+	});
+	refreshOrders(orders);
+})();
+
+(function() {
+	let updating = false;
+	function refreshMachines(machineStates) {
+		if (updating) return;
+		updating = true;
+		console.log("refreshing machines");
+
+		let tbody = document.querySelector(".machines tbody");
+		while (tbody.childElementCount)
+			tbody.removeChild(tbody.lastElementChild);
+
+		let i = -1;
+		machineStates.forEach(machine => {
+			i++;
+			let tr = document.createElement("tr");
+			tbody.appendChild(tr);
+			tr.appendChild(document.createElement("td"));
+			tr.appendChild(document.createElement("td"));
+			tr.appendChild(document.createElement("td"));
+
+			tr.children[0].appendChild(document.createElement("input"));
+			tr.children[0].children[0].type = "checkbox";
+			tr.children[0].children[0].checked = selectedMachines[i] === undefined ? true : selectedMachines[i];
+			tr.children[0].children[0].setAttribute("data-id", i.toString());
+
+			tr.children[1].textContent = machines[i];
+			let n = machine.active.length + machine.queue.length;
+			tr.children[2].textContent = n == 0
+				? "Frei"
+				: n > 1
+					? n + " Vorgänge"
+					: "1 Vorgang";
+
+			tr.children[0].children[0].addEventListener("change", function () {
+				generateSelectedMachines();
+				emit(machineStateObservers);
+			});
+
+			tr.addEventListener("click", function(e) {
+				if (e.target.tagName == "INPUT") return;
+
+				/**
+				 * @type {HTMLInputElement}
+				 */
+				let input = this.querySelector("input");
+				input.checked = !input.checked;
+				input.dispatchEvent(new Event("change"));
+
+				e.preventDefault();
+			});
+		});
+
+		updating = false;
+	}
+
+	machineStateObservers.push(function() {
+		refreshMachines(machineStates);
+	});
+	refreshMachines(machineStates);
+})();
