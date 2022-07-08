@@ -28,9 +28,11 @@ func Start(port int) {
 	}))
 	e.Use(mw.Recover())
 	duration := time.Hour * 24
+	secure := false
 	e.Use(middleware.Session(db, &middleware.SessionConfig{
 		CookieName: "session_id",
 		CookieAge:  &duration,
+		Secure:     &secure,
 	}))
 
 	middleware.RegisterAuthProvider(utilitymodels.GetLocalUser(db))
