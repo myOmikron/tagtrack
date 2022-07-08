@@ -8,7 +8,7 @@ import (
 
 type AccountInfo struct {
 	utilitymodels.CommonID
-	IsCustomer  bool `gorm:"not null;default:true"`
+	IsCustomer  bool `gorm:"not null"`
 	LocalUserID uint
 	LocalUser   utilitymodels.LocalUser
 }
