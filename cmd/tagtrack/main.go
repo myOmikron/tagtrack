@@ -14,27 +14,10 @@ import (
 	"github.com/myOmikron/tagtrack/server"
 )
 
-func assertAvailablePRNG() {
-	buf := make([]byte, 1)
-	_, err := io.ReadFull(rand.Reader, buf)
-	if err != nil {
-		panic(fmt.Sprintf("crypto/rand is unavailable: Read() error %#v", err))
-	}
-}
-
-func generateRandomBytes(n int) ([]byte, error) {
-	assertAvailablePRNG()
+func generateRandomBase64String(n int) string {
 	b := make([]byte, n)
-	_, err := rand.Read(b)
-	if err != nil {
-		return nil, err
-	}
-	return b, nil
-}
-
-func generateRandomBase64String(n int) (string, error) {
-	b, err := generateRandomBytes(n)
-	return base64.URLEncoding.EncodeToString(b), err
+	io.ReadFull(rand.Reader, b)
+	return base64.URLEncoding.EncodeToString(b)
 }
 
 func main() {
@@ -67,11 +50,7 @@ func main() {
 
 	case parserDevice.Invoked:
 		db := server.InitDB()
-		sharedSecret, err := generateRandomBase64String(24)
-		if err != nil {
-			fmt.Printf("Error: %v\n", err)
-			os.Exit(1)
-		}
+		sharedSecret := generateRandomBase64String(24)
 		device := models.Device{
 			Description:     deviceDescription,
 			PreSharedSecret: sharedSecret,
