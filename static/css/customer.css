@@ -1,7 +1,7 @@
 :root {
     --primary: #6002ee;
     --primary-light: #7732f3;
-    --secondary: #90ee02;
+    --secondary: #d42290;
     --text-light: #eee;
     --back: #eee;
 }
@@ -16,7 +16,7 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    height: 3.5rem;
+    height: 4rem;
     width: calc(100vw - 2rem);
     display: flex;
     align-items: center;
@@ -74,7 +74,7 @@ body {
 
 .logout {
     display: flex;
-    width: 6rem;
+    width: 8rem;
     height: 100%;
     align-items: center;
     justify-content: center;
@@ -86,7 +86,7 @@ body {
 
 .logout img {
     filter: invert();
-    height: 80%;
+    height: 70%;
 }
 
 .order {
@@ -98,7 +98,7 @@ body {
     background-color: white;
     min-width: 15rem;
     max-width: 20rem;
-    margin: 0 1rem 0 1rem;
+    margin: 0 1rem 1rem 1rem;
     box-shadow: 0 0 0.5rem gray;
 }
 
@@ -126,11 +126,11 @@ body {
 }
 
 .content {
-    margin-top: 4rem;
+    margin-top: 5rem;
 }
 
 .inactive {
-    filter: invert(70%);
+    filter: grayscale(100%) invert(60%)!important;
 }
 
 .section-heading {
@@ -140,11 +140,13 @@ body {
 }
 
 .order-state-icon {
-    height: 2rem;
+    height: 32px;
+    filter: invert(20%) sepia(73%) saturate(4614%) hue-rotate(309deg) brightness(89%) contrast(87%);
 }
 
 .order-state-next {
     height: 1rem;
+    opacity: 0.25;
 }
 
 @keyframes rotate {
