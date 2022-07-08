@@ -35,7 +35,7 @@ func Start() {
 
 	middleware.RegisterAuthProvider(utilitymodels.GetLocalUser(db))
 
-	setupEndpoints(e)
+	setupEndpoints(e, db)
 
 	execution.SignalStart(e, ":8080", &execution.Config{
 		ReloadFunc:    func() {},
